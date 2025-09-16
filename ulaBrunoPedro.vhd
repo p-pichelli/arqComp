@@ -6,37 +6,19 @@ entity ulaBrunoPedro is
     port(
         a       : in  unsigned(15 downto 0);
         b       : in  unsigned(15 downto 0);
-        controleoperacao : in  std_logic_vector(3 downto 0);
+        controleoperacao : in  std_logic_vector(1 downto 0);
         resultado : out unsigned(15 downto 0);
         zero    : out std_logic
     );
 end ulaBrunoPedro;
 
 architecture comportamento of ulaBrunoPedro is
-
-signal soma, subtracao, and_result, or_result, xor_result, not_a, not_b : std_logic_vector(15 downto 0);
-signal carry : std_logic_vector(15 downto 0);
-signal temp_result : std_logic_vector(15 downto 0);
 begin
---Operações
---Soma
-carry(0) <= '0';
+    with controleoperacao select
+        resultado <= a + b when "00",
+                     a - b when "01",
+                     a and b when "10",
+                     a or  b when "11";
 
-op_soma: for i in 0 to 15 generate
-    begin
-        soma(i) <= a(i) xor b(i) xor carry(i);
-        carry_gen: if i < 15 generate
-            begin
-                carry(i+1) <= (a(i) and b(i)) or (carry(i) and (a(i) xor b(i)));
-            end generate;
-end generate;
-
-op_subtracao: for i in 0 to 15 generate
-    begin
-        subtracao(i) <= a(i) xor (not b(i)) xor carry(i);
-        carry_gen_sub: if i < 15 generate
-            begin
-                carry(i+1) <= (a(i) and (not b(i))) or (carry(i) and (a(i) xor (not b(i))));
-            end generate;
-end generate;
+    zero <= '1' when a - b = 0 else '0';
 end comportamento;
