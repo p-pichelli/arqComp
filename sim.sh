@@ -1,26 +1,40 @@
+#!/usr/bin/env bash
+
+# ===================== Configurações =====================
 VHDL_FILES=(
-    "parity3.vhd"
-    "tb_parity3.vhd"
+    "ulaBrunoPedro.vhd"
+    "ulaBrunoPedro_tb.vhd"
 )
 
-TOP_ENTITY="tb_parity3" 
-SIM_TIME="100ns"      
-VCD_WAVE_FILE="tb_wave.vcd"
-GHW_WAVE_FILE="tb_wave.ghw"      
-
+TOP_ENTITY="ulaBrunoPedro_tb" 
+SIM_TIME="150ns"      
 VHDL_STANDARD="--std=08"      # Configura o padrão VHDL para 2008
+
+# Diretório de saída (padrão: build). Pode ser passado como 1º argumento.
+OUTPUT_DIR=${1:-build}
+
+# Arquivos de waveform agora dentro do diretório de saída
+VCD_WAVE_FILE="${OUTPUT_DIR}/tb_wave.vcd"
+GHW_WAVE_FILE="${OUTPUT_DIR}/tb_wave.ghw"
+
+# Nome do executável/elaboração
+EXECUTABLE="${OUTPUT_DIR}/${TOP_ENTITY}.exe"
 
 
 echo "--- Iniciando simulação VHDL com GHDL ---"
 echo "Arquivos VHDL: ${VHDL_FILES[@]}"
 echo "Entidade de topo: ${TOP_ENTITY}"
 echo "Tempo de simulação: ${SIM_TIME}"
-echo "Arquivo de waveform: ${WAVE_FILE}"
-echo "-----------------------------------------"
+echo "Diretório de saída: ${OUTPUT_DIR}"
+echo "Waveforms: $(basename "$VCD_WAVE_FILE"), $(basename "$GHW_WAVE_FILE")"
+echo "-----------------------------------------------------"
 
-# Limpeza 
-echo "Executando limpeza..."
-rm -f *.o *.cf ${VCD_WAVE_FILE} ${GHW_WAVE_FILE} work-obj*.cf *.ghw 2>/dev/null # Remove arquivos anteriores
+# Cria diretório de saída
+mkdir -p "$OUTPUT_DIR" || { echo "ERRO ao criar diretório $OUTPUT_DIR"; exit 1; }
+
+# Limpeza seletiva dentro do diretório de saída
+echo "Executando limpeza no diretório de saída..."
+rm -f "${OUTPUT_DIR}"/*.o "${OUTPUT_DIR}"/*.cf "$VCD_WAVE_FILE" "$GHW_WAVE_FILE" "${OUTPUT_DIR}"/*.ghw 2>/dev/null
 echo "Limpeza concluída."
 
 # Compilação
@@ -31,37 +45,25 @@ for file in "${VHDL_FILES[@]}"; do
         exit 1
     fi
     echo "Compilando $file..."
-    ghdl -a ${VHDL_STANDARD} "$file"
-    if [ $? -ne 0 ]; then
-        echo "ERRO na compilação de $file. Verifique o código VHDL."
-        exit 1
-    fi
+    ghdl -a ${VHDL_STANDARD} --workdir="${OUTPUT_DIR}" "$file" || { echo "ERRO na compilação de $file"; exit 1; }
 done
 echo "Compilação concluída com sucesso."
 
 # Elaboração 
 echo "Iniciando elaboração da entidade de topo '$TOP_ENTITY'..."
-ghdl -e ${VHDL_STANDARD} "$TOP_ENTITY"
-if [ $? -ne 0 ]; then
-    echo "ERRO na elaboração da entidade $TOP_ENTITY. Verifique a arquitetura e dependências."
-    exit 1
-fi
-echo "Elaboração concluída com sucesso."
+ghdl -e ${VHDL_STANDARD} --workdir="${OUTPUT_DIR}" -o "${EXECUTABLE}" "$TOP_ENTITY" || { echo "ERRO na elaboração"; exit 1; }
+echo "Elaboração concluída com sucesso. Executável: $EXECUTABLE"
 
 # --- Execução da Simulação ---
 echo "Iniciando simulação por $SIM_TIME..."
-# --- waveform 
-ghdl -r ${VHDL_STANDARD} "$TOP_ENTITY" --stop-time="$SIM_TIME" --vcd="$VCD_WAVE_FILE" --wave="$GHW_WAVE_FILE"
-if [ $? -ne 0 ]; then
-    echo "ERRO durante a execução da simulação."
-    exit 1
-fi
+# Executa diretamente o binário gerado (evita erro de não encontrar .exe ao usar 'ghdl -r')
+"${EXECUTABLE}" --stop-time="${SIM_TIME}" --vcd="${VCD_WAVE_FILE}" --wave="${GHW_WAVE_FILE}" || { echo "ERRO durante a simulação"; exit 1; }
 
 echo "Simulação concluída."
-echo "Arquivo de waveform '${VCD_WAVE_FILE}' e '${GHW_WAVE_FILE}' gerado."
+echo "Arquivos de waveform gerados em: ${VCD_WAVE_FILE} e ${GHW_WAVE_FILE}"
 
 # --- Instruções Finais ---
 echo "-----------------------------------------"
-echo "Simulação finalizada."
+echo "Simulação finalizada. Resultados em '${OUTPUT_DIR}'."
 
 exit 0
