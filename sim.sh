@@ -2,12 +2,12 @@
 
 # ===================== Configurações =====================
 VHDL_FILES=(
-    "ulaBrunoPedro.vhd"
-    "ulaBrunoPedro_tb.vhd"
+    "reg_16bits.vhd"
+    "reg_16bits_tb.vhd"
 )
 
-TOP_ENTITY="ulaBrunoPedro_tb" 
-SIM_TIME="150ns"      
+TOP_ENTITY="reg_16bits_tb" 
+SIM_TIME="10us"      
 VHDL_STANDARD="--std=08"      # Configura o padrão VHDL para 2008
 
 # Diretório de saída (padrão: build). Pode ser passado como 1º argumento.
