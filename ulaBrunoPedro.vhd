@@ -21,5 +21,5 @@ begin
                      a or  b when others;
                       
 
-    zero <= '1' when a - b = 0 else '0';
+    zero <= '1' when resultado = 0 else '0';
 end comportamento;
