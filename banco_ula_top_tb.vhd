@@ -83,41 +83,64 @@ begin
         reg_wr_en <= '0';
         sel_write <= "000";
 
-        -- atribui 0x0002 no acumulador
-        immediate_value <= to_unsigned(2, 16);
-        ld_immediate    <= '1';
-        acc_wr_en       <= '1';
-        wait until rising_edge(clk);
-        acc_wr_en       <= '0';
-        ld_immediate    <= '0';
-
         -- add A, r1
         sel_read  <= "001";
         controle  <= "00";  --op de adicao
         acc_wr_en <= '1';
         wait until rising_edge(clk);
-        acc_wr_en <= '0';
 
-    
+        -- escreve o valor de acc
         sel_write <= "010";
         reg_wr_en <= '1';
         wait until rising_edge(clk);
         reg_wr_en <= '0';
         sel_write <= "000";
 
-        immediate_value <= to_unsigned(5, 16);
-        ld_immediate    <= '1';
-        acc_wr_en       <= '1';
-        wait until rising_edge(clk);
-        acc_wr_en       <= '0';
-        ld_immediate    <= '0';
-
-        -- sub A, r2 (tem q dar -5 ou 0xfffb na saida da ula)
-        sel_read  <= "010";
-        controle  <= "01";  --op de subtr
+        --add A, r2
+        sel_read <= "010";
+        controle <= "00";
         acc_wr_en <= '1';
         wait until rising_edge(clk);
-        acc_wr_en <= '0';
+        
+        -- escreve em r3
+        sel_write <= "011";
+        reg_wr_en <= '1';
+        wait until rising_edge(clk);
+        reg_wr_en <= '0';
+        sel_write <= "000";
+
+         --add A, r3
+        sel_read <= "011";
+        controle <= "00";
+        acc_wr_en <= '1';
+        wait until rising_edge(clk);
+
+        -- escreve em r4
+        sel_write <= "100";
+        reg_wr_en <= '1';
+        wait until rising_edge(clk);
+        reg_wr_en <= '0';
+        sel_write <= "000";
+
+         --sub A, r4
+        sel_read <= "100";
+        controle <= "01";
+        acc_wr_en <= '1';
+        wait until rising_edge(clk);
+
+        -- escreve em r5
+        sel_write <= "101";
+        reg_wr_en <= '1';
+        wait until rising_edge(clk);
+        reg_wr_en <= '0';
+        sel_write <= "000";
+
+         --sub A, r5
+        sel_read <= "101";
+        controle <= "01";
+        acc_wr_en <= '1';
+        wait until rising_edge(clk);
+
 
         wait for 10 * PERIOD;
         wait;
