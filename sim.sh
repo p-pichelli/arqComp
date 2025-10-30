@@ -2,14 +2,15 @@
 
 # ===================== Configurações =====================
 VHDL_FILES=(
-    "reg_16bits.vhd"
-    "banco_reg.vhd"
-    "ulaBrunoPedro.vhd"
-    "banco_ula_top.vhd"
-    "banco_ula_top_tb.vhd"
+    "pc.vhd"
+    "rom.vhd"
+    "pc_controller.vhd"
+    "un_controle.vhd"
+    "uc_top.vhd"
+    "uc_top_tb.vhd"
 )
 
-TOP_ENTITY="banco_ula_top_tb" 
+TOP_ENTITY="uc_top_tb" 
 SIM_TIME="5us"      
 VHDL_STANDARD="--std=08"      # Configura o padrão VHDL para 2008
 
