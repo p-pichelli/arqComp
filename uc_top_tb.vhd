@@ -11,7 +11,7 @@ architecture sim of uc_top_tb is
     signal rst       : std_logic := '0';
     signal pc_value  : unsigned(7 downto 0);
     signal instr_out : unsigned(18 downto 0);
-    signal estado    : std_logic;
+    signal estado    : unsigned (1 downto 0);
 begin
     dut: entity work.uc_top(arch_uc_top)
         port map(

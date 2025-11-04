@@ -28,9 +28,9 @@ begin
         port map(
             clk          => clk,
             rst          => rst,
-            pc_out       => pc_out_sig,
+            pc_out       => pc_in_sig,
             write_enable => write_enable_sig,
-            pc_in        => pc_in_sig
+            pc_in        => pc_out_sig
         );
 
     ROM_inst: entity work.rom

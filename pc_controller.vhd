@@ -6,14 +6,13 @@ entity pc_controller is
     port(
         clk          : in  std_logic;
         rst          : in  std_logic;
-        pc_out       : in  unsigned(7 downto 0);
+        pc_in       : in  unsigned(7 downto 0);
         write_enable : out std_logic;
-        pc_in        : out unsigned(7 downto 0)
+        pc_out        : out unsigned(7 downto 0)
     );
 end entity;
 
 architecture behavior of pc_controller is
 begin
-    write_enable <= '1';
-    pc_in <= pc_out + 1;
+    pc_out <= pc_in when write_enable = '0' else pc_in + 1;
 end architecture;
