@@ -17,6 +17,6 @@ architecture arch_un_controle of un_controle is
     signal opcode : unsigned(3 downto 0);
 begin
     opcode <= instr(18 downto 15);
-    jump_en     <= '1' when (estado_i = "01" and opcode = "1110") else '0';
+    jump_en <= '1' when (estado_i = "10" and opcode = "1110") else '0';
     jump_addr_o <= instr(7 downto 0) when opcode = "1110" else (others => '0');
 end architecture;

@@ -12,6 +12,8 @@ entity banco_ula_top is
         reg_wr_en         : in  std_logic;
         acc_wr_en         : in  std_logic;
         ld_immediate      : in  std_logic;
+        mov_reg_to_acc    : in  std_logic; 
+
         immediate_value   : in  unsigned(15 downto 0);
         accum_out         : out unsigned(15 downto 0);
         alu_out           : out unsigned(15 downto 0);
@@ -45,8 +47,9 @@ begin
             zero              => zero_flag
         );
 
-    acc_next <= immediate_value when ld_immediate = '1' else alu_result;
-
+    acc_next <= immediate_value when ld_immediate = '1' else
+                bank_read_data  when mov_reg_to_acc = '1' else
+                alu_result;
     acc_reg : entity work.reg_16bits(arch_reg_16bits)
         port map (
             clk      => clk,

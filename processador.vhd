@@ -6,6 +6,7 @@ entity processador is
     port(
         clk   : in  std_logic;
         rst   : in  std_logic;
+
         pc_out        : out unsigned(7 downto 0);
         instr_out     : out unsigned(18 downto 0);
         estado_out    : out unsigned(1 downto 0);
@@ -24,7 +25,6 @@ architecture arch_processador of processador is
     signal reg_dest_s     : std_logic_vector(2 downto 0);
     signal reg_src_s      : std_logic_vector(2 downto 0);
     signal imm_const_s    : unsigned(8 downto 0);
-    signal is_const_s     : std_logic;
     
     signal controleop_s   : std_logic_vector(1 downto 0);
     signal sel_read_s     : std_logic_vector(2 downto 0);
@@ -32,11 +32,16 @@ architecture arch_processador of processador is
     signal reg_wr_en_s    : std_logic;
     signal acc_wr_en_s    : std_logic;
     signal ld_imm_s       : std_logic;
+    signal mov_reg_to_acc_s : std_logic;
     signal imm_val_s      : unsigned(15 downto 0);
     
     signal accum_s        : unsigned(15 downto 0);
     signal alu_s          : unsigned(15 downto 0);
     signal zero_s         : std_logic;
+    
+    signal is_mov_acc_to_reg : std_logic;
+    signal is_mov_reg_to_acc : std_logic;
+    signal is_alu_op         : std_logic;  
     
 begin
     uc_inst : entity work.uc_top(arch_uc_top)
@@ -58,6 +63,7 @@ begin
             reg_wr_en        => reg_wr_en_s,
             acc_wr_en        => acc_wr_en_s,
             ld_immediate     => ld_imm_s,
+            mov_reg_to_acc   => mov_reg_to_acc_s,
             immediate_value  => imm_val_s,
             accum_out        => accum_s,
             alu_out          => alu_s,
@@ -68,36 +74,40 @@ begin
     reg_dest_s  <= std_logic_vector(instr_s(14 downto 12));
     reg_src_s   <= std_logic_vector(instr_s(11 downto 9));
     imm_const_s <= instr_s(8 downto 0);
-    is_const_s  <= imm_const_s(8);  
     
     imm_val_s <= resize(imm_const_s(7 downto 0), 16);
     
-    ld_imm_s <= '1' when (estado_s /= "00" and opcode_s = "1001") else '0';
+    is_alu_op <= '1' when (opcode_s = "0110" or  --ADD
+                           opcode_s = "1010" or  -- SUB
+                           opcode_s = "1100" or  
+                           opcode_s = "1011") else '0';  
     
-    controleop_s <= "00" when opcode_s = "0110" else  --ADD
-                    "01" when opcode_s = "1010" else  -- SUB
-                    "10" when opcode_s = "1100" else  -- AND
-                    "11" when opcode_s = "1011" else  -- OR
-                    "00";  -- default
+    is_mov_acc_to_reg <= '1' when (opcode_s = "1111" and reg_src_s = "000") else '0';
+    is_mov_reg_to_acc <= '1' when (opcode_s = "1111" and reg_src_s /= "000") else '0';
     
-    sel_read_s <= reg_src_s when (opcode_s = "0110" or opcode_s = "1010" or 
-                                   opcode_s = "1100" or opcode_s = "1011") else
-                  reg_dest_s when opcode_s = "1111" else
-                  "000";
+    ld_imm_s <= '1' when (estado_s = "10" and opcode_s = "1001") else '0';
+    
+    mov_reg_to_acc_s <= '1' when (estado_s = "10" and 
+                                   is_mov_reg_to_acc = '1') else '0';
+
+    controleop_s <= "00" when opcode_s = "0110" else  -- ADD
+                    "01" when opcode_s = "1010" else  --SUB
+                    "10" when opcode_s = "1100" else  
+                    "11" when opcode_s = "1011" else  
+                    "00";  
+    
+    sel_read_s <= reg_src_s;
     
     sel_write_s <= reg_dest_s;
     
-    reg_wr_en_s <= '1' when (estado_s /= "00" and 
-                            (opcode_s = "0110" or opcode_s = "1010" or 
-                             opcode_s = "1100" or opcode_s = "1011" or
-                             opcode_s = "1111")) else '0';
+    reg_wr_en_s <= '1' when (estado_s = "10" and 
+                            (is_alu_op = '1' or is_mov_acc_to_reg = '1')) else '0';
     
-    acc_wr_en_s <= '1' when (estado_s /= "00" and 
-                            (opcode_s = "1001" or opcode_s = "1111" or
-                             opcode_s = "0110" or opcode_s = "1010" or
-                             opcode_s = "1100" or opcode_s = "1011")) else '0';
+    acc_wr_en_s <= '1' when (estado_s = "10" and 
+                            (opcode_s = "1001" or          -- LD
+                             is_mov_reg_to_acc = '1' or    -- MOV ACC,R
+                             is_alu_op = '1')) else '0';   -- ADD/SUB/AND/OR
     
-    -- Saídas de observação
     pc_out        <= pc_s;
     instr_out     <= instr_s;
     estado_out    <= estado_s;

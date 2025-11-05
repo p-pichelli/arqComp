@@ -68,7 +68,7 @@ begin
             jump_addr_o => jump_addr_s
         );
 
-    pc_we_s <= '0' when estado_s = "00" else '1';
+    pc_we_s <= '1' when estado_s = "10" else '0';
     pc_ctrl_we_s <= '0' when jump_en_s = '1' else '1';
         
      --pc e atualizado so qnd estado = '1'
