@@ -8,7 +8,10 @@ entity uc_top is
         rst       : in  std_logic;
         pc_value  : out unsigned(7 downto 0);
         instr_out : out unsigned(18 downto 0);
-        estado    : out unsigned (1 downto 0)  --0=fetch; 1=decode/execute
+        estado    : out unsigned (1 downto 0);  --0=fetch; 1=decode/execute
+        zero_flag : in  std_logic;
+        overflow_flag : in  std_logic;
+        negative_flag : in  std_logic
     );
 end entity;
 
@@ -60,13 +63,17 @@ begin
 
     u_un_ctrl : entity work.un_controle
         port map(
-            clk         => clk,
-            rst         => rst,
-            estado_i    => estado_s,
-            instr       => instr_s,
-            jump_en     => jump_en_s,
-            jump_addr_o => jump_addr_s
+            clk             => clk,
+            rst             => rst,
+            estado_i        => estado_s,
+            instr           => instr_s,
+            zero_flag_i     => zero_flag,
+            negative_flag_i => negative_flag,
+            overflow_flag_i => overflow_flag,
+            jump_en         => jump_en_s,
+            jump_addr_o     => jump_addr_s
         );
+
 
     pc_we_s <= '1' when estado_s = "10" else '0';
     pc_ctrl_we_s <= '0' when jump_en_s = '1' else '1';

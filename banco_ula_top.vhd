@@ -17,7 +17,9 @@ entity banco_ula_top is
         immediate_value   : in  unsigned(15 downto 0);
         accum_out         : out unsigned(15 downto 0);
         alu_out           : out unsigned(15 downto 0);
-        zero_flag         : out std_logic
+        zero_flag         : out std_logic;
+        overflow_flag         : out std_logic;
+        negative_flag      : out std_logic
     );
 end entity banco_ula_top;
 
@@ -44,7 +46,9 @@ begin
             b                 => bank_read_data,
             controleoperacao  => controleoperacao,
             resultado         => alu_result,
-            zero              => zero_flag
+            zero              => zero_flag,
+            overflow          => overflow_flag,
+            negative         => negative_flag
         );
 
     acc_next <= immediate_value when ld_immediate = '1' else

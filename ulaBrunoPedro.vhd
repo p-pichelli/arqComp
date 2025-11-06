@@ -9,7 +9,8 @@ entity ulaBrunoPedro is
         controleoperacao : in  std_logic_vector(1 downto 0);
         resultado : out unsigned(15 downto 0);
         zero    : out std_logic;
-        overflow: out std_logic
+        overflow: out std_logic;
+        negative : out std_logic
     );
 end ulaBrunoPedro;
 
@@ -26,7 +27,7 @@ begin
                      a or  b                when others;
 
     zero <= '1' when resultado = 0 else '0';
-
+    negative <= resultado(15);
     with controleoperacao select
         overflow <= soma_ext(16) when "00",
                      sub_ext(16)  when "01",

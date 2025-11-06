@@ -12,7 +12,9 @@ entity processador is
         estado_out    : out unsigned(1 downto 0);
         accum_out     : out unsigned(15 downto 0);
         alu_out       : out unsigned(15 downto 0);
-        zero_flag_out : out std_logic
+        zero_flag_out : out std_logic;
+        overflow_flag_out : out std_logic;
+        negative_flag_out : out std_logic
     );
 end entity;
 
@@ -38,6 +40,8 @@ architecture arch_processador of processador is
     signal accum_s        : unsigned(15 downto 0);
     signal alu_s          : unsigned(15 downto 0);
     signal zero_s         : std_logic;
+    signal overflow_s     : std_logic;
+    signal negative_s     : std_logic;
     
     signal is_mov_acc_to_reg : std_logic;
     signal is_mov_reg_to_acc : std_logic;
@@ -50,7 +54,10 @@ begin
             rst       => rst,
             pc_value  => pc_s,
             instr_out => instr_s,
-            estado    => estado_s
+            estado    => estado_s,
+            zero_flag => zero_s,
+            overflow_flag => overflow_s,
+            negative_flag => negative_s
         );
     
     datapath_inst : entity work.banco_ula_top(arch_banco_ula_top)
@@ -67,7 +74,9 @@ begin
             immediate_value  => imm_val_s,
             accum_out        => accum_s,
             alu_out          => alu_s,
-            zero_flag        => zero_s
+            zero_flag        => zero_s,
+            overflow_flag    => overflow_s,
+            negative_flag    => negative_s
         );
     
     opcode_s    <= instr_s(18 downto 15);
@@ -114,5 +123,7 @@ begin
     accum_out     <= accum_s;
     alu_out       <= alu_s;
     zero_flag_out <= zero_s;
+    overflow_flag_out <= overflow_s;
+    negative_flag_out <= negative_s;
     
 end architecture;

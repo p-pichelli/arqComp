@@ -15,15 +15,17 @@ Opcodes:
 - J: 1110;
 - MOV: 1111;
 - ST: 0011;
+- BLT: 0101;
+- BGT: 1000;
 - NOP: 0000;
 
 Assembly:
 - LD: Carrega no acumulador uma constante ou endereço: 
 LD ACC, Constante/Endereço;
-- ADD: Soma o ACC e um Reg, salvando no Reg:
-ADD ACC, R3 e ADD R3, ACC (ambos salvam no R3 pelo fato do ACC ser sempre a entrada B da ULA);
-- SUB: Subtrai ACC de um Reg, salvando no Reg:
-SUB ACC, R4 e SUB R4, ACC (ambos salvam no R4);
+- ADD: Soma o ACC e um Reg, salvando no primeiro termo:
+ADD ACC, R3 e ADD R3, ACC;
+- SUB: Subtrai ACC de um Reg, salvando no primeiro termo:
+SUB ACC, R4 e SUB R4, ACC;
 - AND: Operação de AND entre um Reg e o ACC:
 AND R3, ACC e AND ACC, R3;
 - OR: Operação de OR entre ACC e um Reg:
@@ -34,41 +36,27 @@ J 4;
 MOV R3, ACC (R3 recebe ACC) e MOV ACC, R3 (ACC recebe R3);
 - ST: Escreve um Reg no endereço salvo no ACC ou vice-versa:
 ST R3, ACC (escreve ACC no endereço do conteúdo de R3) e ST ACC, R3 (escreve R3 no endereço do conteúdo de ACC);
+- BLT (branch if lesser than): fará um branch para o endereço especificado, terceiro termo, se o valor no primeiro termo, um Reg, for menor que o segundo, o ACC: BLT R3, ACC, 2;
+- BGT (branch if greater than): fará um branch para o endereço especificado, terceiro termo, se o valor no primeiro termo, um Reg, for maior que o segundo, o ACC: BGT R3, ACC, 10;
 - NOP: no operation, não faz nada:
 NOP;
 
 
-00: LD  ACC,5        A. carregar 5 no acumulador
-01: MOV R3,ACC       A. R3 ← 5
+00: LD  ACC,0        A. carregar 0 no acumulador
+01: MOV R3,ACC       A. R3 ← 0
 
-02: LD  ACC,8        B. carregar 8 no acumulador
-03: MOV R4,ACC       B. R4 ← 8
+02: LD  ACC,0        B. carregar 0 no acumulador
+03: MOV R4,ACC       B. R4 ← 0
 
 04: MOV ACC,R3       C. início: ACC ← R3
 05: ADD ACC,R4       C. ACC ← ACC + R4  (ACC = R3 + R4)
-06: MOV R5,ACC       C. R5 ← ACC
+06: MOV R4,ACC       C. R4 ← ACC
 
-07: LD  ACC,1        D. preparar constante 1 no ACC
-08: MOV R1,ACC       D. R1 ← 1 (registrador auxiliar para -1)
-09: MOV ACC,R5       D. ACC ← R5
-10: SUB ACC,R1       D. ACC ← ACC - R1  (R5-1)
-11: MOV R5,ACC       D. R5 ← ACC
+07: LD  ACC,1        D. carregar 1 no acumulador
+08: ADD R3,ACC       D. R3 + 1
 
-12: J   20           E. pular para o endereço 20
+09: MOV ACC,30       E. carregar 30 no acumulador
+10: BLT R3,ACC,4     E. pula para o endereço 4 se R3 < ACC
 
-13: LD  ACC,0        F. (nunca executado) zera ACC
-14: MOV R5,ACC       F. (nunca executado) R5 ← 0
-
-15: NOP
-16: NOP
-17: NOP
-18: NOP
-19: NOP
-
-20: MOV ACC,R5       G. endereço 20: ACC ← R5
-21: MOV R3,ACC       G. R3 ← R5
-
-22: J   04           H. Salta para passo C (endereço 04)
-
-23: LD  ACC,0        I. (não executado) zera ACC
-24: MOV R3,ACC       I. (não executado) R3 ← 0
+11: MOV ACC,R4       F. ACC ← R4
+12: MOV R5,ACC       E. R5 ← ACC
