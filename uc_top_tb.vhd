@@ -12,6 +12,9 @@ architecture sim of uc_top_tb is
     signal pc_value  : unsigned(7 downto 0);
     signal instr_out : unsigned(18 downto 0);
     signal estado    : unsigned (1 downto 0);
+    signal zero_flag: std_logic;
+    signal negative_flag: std_logic;
+    signal overflow_flag: std_logic;
 begin
     dut: entity work.uc_top(arch_uc_top)
         port map(
@@ -19,7 +22,10 @@ begin
             rst       => rst,
             pc_value  => pc_value,
             instr_out => instr_out,
-            estado    => estado
+            estado    => estado,
+            zero_flag => zero_flag,
+            negative_flag => negative_flag,
+            overflow_flag => overflow_flag
         );
 
     clk_proc: process

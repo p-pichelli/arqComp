@@ -87,7 +87,7 @@ begin
     imm_val_s <= resize(imm_const_s(7 downto 0), 16);
     
     is_alu_op <= '1' when (opcode_s = "0110" or  --ADD
-                           opcode_s = "1010" or  -- SUB
+                          (opcode_s = "1010" or opcode_s = "0101" or opcode_s = "1000" or opcode_s = "0111") or  --SUB
                            opcode_s = "1100" or  
                            opcode_s = "1011") else '0';  
     
@@ -100,7 +100,7 @@ begin
                                    is_mov_reg_to_acc = '1') else '0';
 
     controleop_s <= "00" when opcode_s = "0110" else  -- ADD
-                    "01" when opcode_s = "1010" else  --SUB
+                    "01" when (opcode_s = "1010" or opcode_s = "0101" or opcode_s = "1000" or opcode_s = "0111") else  --SUB
                     "10" when opcode_s = "1100" else  
                     "11" when opcode_s = "1011" else  
                     "00";  

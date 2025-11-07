@@ -21,18 +21,22 @@ architecture arch_un_controle of un_controle is
     signal opcode : unsigned(3 downto 0);
     signal bgt_cond : std_logic;
     signal blt_cond : std_logic;
+    signal bvc_cond : std_logic;
 
 begin
     opcode <= instr(18 downto 15);
 
     bgt_cond <= '1' when (zero_flag_i = '0' and negative_flag_i = overflow_flag_i) else '0';
     blt_cond <= '1' when (zero_flag_i = '0' and negative_flag_i /= overflow_flag_i) else '0';
-
+    bvc_cond <= '1' when (overflow_flag_i = '0') else '0';
+    
     jump_en <= '1' when (estado_i = "10" and (
                           opcode = "1110" or  -- JMP incondicional
                           (opcode = "1000" and bgt_cond = '1') or  -- BGT condicional
-                          (opcode = "0101" and blt_cond = '1')     -- BLT condicional
-                         )) else '0';
+                          (opcode = "0101" and blt_cond = '1') or    -- BLT condicional
+                          (opcode = "0111" and bvc_cond = '1')     -- BVC
+                          )) 
+                          else '0';
 
-    jump_addr_o <= instr(7 downto 0) when (opcode = "1110" or opcode = "1000") else (others => '0');
+    jump_addr_o <= instr(7 downto 0) when (opcode = "1110" or opcode = "1000" or opcode = "0111") else (others => '0');
 end architecture;
