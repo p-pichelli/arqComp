@@ -30,13 +30,13 @@ architecture arch_un_controle of un_controle is
 begin
     opcode <= instr(18 downto 15);
 
-    isAluOperation_o <= '1' when (opcode = "0110" or  --ADD
-                          (opcode = "1010" or opcode = "0101" or opcode = "1000" or opcode = "0111") or  --SUB
+    isAluOperation_o <= '1' when estado_i = "10" AND (opcode = "0110" or  --ADD
+                          (opcode = "1010") or  --SUB
                            opcode = "1100" or  
                            opcode = "1011") else '0';  
 
     aluOperation_o <= "00" when opcode = "0110" else  -- ADD
-                "01" when (opcode = "1010" or opcode = "0101" or opcode = "1000" or opcode = "0111") else  --SUB
+                "01" when opcode = "1010" else  --SUB
                 "10" when opcode = "1100" else  
                 "11" when opcode = "1011" else  
                 "00";  

@@ -44,6 +44,10 @@ architecture arch_processador of processador is
     signal zero_s         : std_logic;
     signal overflow_s     : std_logic;
     signal negative_s     : std_logic;
+
+    signal zero_flag_ff_o     : std_logic;
+    signal overflow_flag_ff_o : std_logic;
+    signal negative_flag_ff_o : std_logic;
     
     signal is_mov_acc_to_reg : std_logic;
     signal is_mov_reg_to_acc : std_logic;
@@ -57,16 +61,16 @@ begin
             pc_value  => pc_s,
             instr_out => instr_s,
             estado    => estado_s,
-            zero_flag => zero_s,
-            overflow_flag => overflow_s,
-            negative_flag => negative_s,
+            zero_flag => zero_flag_ff_o,
+            overflow_flag => overflow_flag_ff_o,
+            negative_flag => negative_flag_ff_o,
             bank_reg_wr_en_o => reg_wr_en_un_top,
             acc_wr_en_o => acc_wr_en_un_top,
             aluOperation_o => controleop_s,
             isAluOperation_o => is_alu_op
         );
     
-    datapath_inst : entity work.banco_ula_top(arch_banco_ula_top)
+    banco_ula_inst : entity work.banco_ula_top(arch_banco_ula_top)
         port map(
             clk              => clk,
             reset            => rst,
@@ -84,7 +88,30 @@ begin
             overflow_flag    => overflow_s,
             negative_flag    => negative_s
         );
-    
+     negative_flag_ff: entity work.flipflop(arch_fliflop)
+        port map(
+            clk => clk,
+            rst => rst,
+            wr_en => is_alu_op,
+            data_in => negative_s,
+            data_out => negative_flag_ff_o
+        );
+    overflow_flag_ff: entity work.flipflop(arch_fliflop)
+        port map(
+            clk => clk,
+            rst => rst,
+            wr_en => is_alu_op,
+            data_in => overflow_s,
+            data_out => overflow_flag_ff_o
+        );
+    zero_flag_ff: entity work.flipflop(arch_fliflop)
+        port map(
+            clk => clk,
+            rst => rst,
+            wr_en => is_alu_op,
+            data_in => zero_s,
+            data_out => zero_flag_ff_o
+        );
     opcode_s    <= instr_s(18 downto 15);
     reg_dest_s  <= std_logic_vector(instr_s(14 downto 12));
     reg_src_s   <= std_logic_vector(instr_s(11 downto 9));

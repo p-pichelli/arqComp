@@ -13,7 +13,6 @@ entity banco_ula_top is
         acc_wr_en         : in  std_logic;
         ld_immediate      : in  std_logic;
         mov_reg_to_acc    : in  std_logic; 
-
         immediate_value   : in  unsigned(15 downto 0);
         accum_out         : out unsigned(15 downto 0);
         alu_out           : out unsigned(15 downto 0);
@@ -28,6 +27,7 @@ architecture arch_banco_ula_top of banco_ula_top is
     signal bank_read_data  : unsigned(15 downto 0);
     signal alu_result      : unsigned(15 downto 0);
     signal acc_next        : unsigned(15 downto 0);
+   
 begin
     reg_bank : entity work.banco_reg(arch_banco_reg)
         port map (
@@ -50,6 +50,7 @@ begin
             overflow          => overflow_flag,
             negative         => negative_flag
         );
+   
 
     acc_next <= immediate_value when ld_immediate = '1' else
                 bank_read_data  when mov_reg_to_acc = '1' else

@@ -2,6 +2,7 @@
 
 # ===================== Configurações =====================
 VHDL_FILES=(
+    "flipflop.vhd"
     "reg_16bits.vhd"
     "ulaBrunoPedro.vhd"
     "banco_reg.vhd"
