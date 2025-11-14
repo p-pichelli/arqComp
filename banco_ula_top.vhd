@@ -42,8 +42,8 @@ begin
 
     alu_inst : entity work.ulaBrunoPedro(comportamento)
         port map (
-            a                 => acc_value,
-            b                 => bank_read_data,
+            a                 => bank_read_data,
+            b                 => acc_value,
             controleoperacao  => controleoperacao,
             resultado         => alu_result,
             zero              => zero_flag,

@@ -18,7 +18,7 @@ VHDL_FILES=(
 )
 
 TOP_ENTITY="processador_tb" 
-SIM_TIME="5us"      
+SIM_TIME="1ms"      
 VHDL_STANDARD="--std=08"      # Configura o padrão VHDL para 2008
 
 # Diretório de saída (padrão: build). Pode ser passado como 1º argumento.

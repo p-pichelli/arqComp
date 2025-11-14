@@ -11,7 +11,11 @@ entity uc_top is
         estado    : out unsigned (1 downto 0);  --0=fetch; 1=decode/execute
         zero_flag : in  std_logic;
         overflow_flag : in  std_logic;
-        negative_flag : in  std_logic
+        negative_flag : in  std_logic;
+        bank_reg_wr_en_o : out std_logic;
+        acc_wr_en_o : out std_logic;
+        aluOperation_o : out std_logic_vector(1 downto 0);
+        isAluOperation_o : out std_logic
     );
 end entity;
 
@@ -71,7 +75,11 @@ begin
             negative_flag_i => negative_flag,
             overflow_flag_i => overflow_flag,
             jump_en         => jump_en_s,
-            jump_addr_o     => jump_addr_s
+            jump_addr_o     => jump_addr_s,
+            bank_reg_wr_en_o => bank_reg_wr_en_o,
+            acc_wr_en_o => acc_wr_en_o,
+            aluOperation_o => aluOperation_o,
+            isAluOperation_o => isAluOperation_o
         );
 
 

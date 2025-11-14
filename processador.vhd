@@ -31,12 +31,14 @@ architecture arch_processador of processador is
     signal controleop_s   : std_logic_vector(1 downto 0);
     signal sel_read_s     : std_logic_vector(2 downto 0);
     signal sel_write_s    : std_logic_vector(2 downto 0);
-    signal reg_wr_en_s    : std_logic;
-    signal acc_wr_en_s    : std_logic;
     signal ld_imm_s       : std_logic;
     signal mov_reg_to_acc_s : std_logic;
     signal imm_val_s      : unsigned(15 downto 0);
-    
+    signal reg_wr_en_un_top    : std_logic;
+    signal reg_wr_en_banco_ula : std_logic;
+    signal acc_wr_en_banco_ula    : std_logic;
+    signal acc_wr_en_un_top : std_logic;
+
     signal accum_s        : unsigned(15 downto 0);
     signal alu_s          : unsigned(15 downto 0);
     signal zero_s         : std_logic;
@@ -57,7 +59,11 @@ begin
             estado    => estado_s,
             zero_flag => zero_s,
             overflow_flag => overflow_s,
-            negative_flag => negative_s
+            negative_flag => negative_s,
+            bank_reg_wr_en_o => reg_wr_en_un_top,
+            acc_wr_en_o => acc_wr_en_un_top,
+            aluOperation_o => controleop_s,
+            isAluOperation_o => is_alu_op
         );
     
     datapath_inst : entity work.banco_ula_top(arch_banco_ula_top)
@@ -67,8 +73,8 @@ begin
             controleoperacao => controleop_s,
             sel_read_reg     => sel_read_s,
             sel_write_reg    => sel_write_s,
-            reg_wr_en        => reg_wr_en_s,
-            acc_wr_en        => acc_wr_en_s,
+            reg_wr_en        => reg_wr_en_banco_ula,
+            acc_wr_en        => acc_wr_en_banco_ula,
             ld_immediate     => ld_imm_s,
             mov_reg_to_acc   => mov_reg_to_acc_s,
             immediate_value  => imm_val_s,
@@ -86,11 +92,6 @@ begin
     
     imm_val_s <= resize(imm_const_s(7 downto 0), 16);
     
-    is_alu_op <= '1' when (opcode_s = "0110" or  --ADD
-                          (opcode_s = "1010" or opcode_s = "0101" or opcode_s = "1000" or opcode_s = "0111") or  --SUB
-                           opcode_s = "1100" or  
-                           opcode_s = "1011") else '0';  
-    
     is_mov_acc_to_reg <= '1' when (opcode_s = "1111" and reg_src_s = "000") else '0';
     is_mov_reg_to_acc <= '1' when (opcode_s = "1111" and reg_src_s /= "000") else '0';
     
@@ -99,20 +100,16 @@ begin
     mov_reg_to_acc_s <= '1' when (estado_s = "10" and 
                                    is_mov_reg_to_acc = '1') else '0';
 
-    controleop_s <= "00" when opcode_s = "0110" else  -- ADD
-                    "01" when (opcode_s = "1010" or opcode_s = "0101" or opcode_s = "1000" or opcode_s = "0111") else  --SUB
-                    "10" when opcode_s = "1100" else  
-                    "11" when opcode_s = "1011" else  
-                    "00";  
+
     
     sel_read_s <= reg_src_s;
     
     sel_write_s <= reg_dest_s;
     
-    reg_wr_en_s <= '1' when (estado_s = "10" and 
-                            (is_alu_op = '1' or is_mov_acc_to_reg = '1')) else '0';
+    reg_wr_en_banco_ula <= '1' when (estado_s = "10" and reg_wr_en_un_top = '1' and
+                            ( is_mov_acc_to_reg = '1')) else '0';
     
-    acc_wr_en_s <= '1' when (estado_s = "10" and 
+    acc_wr_en_banco_ula <= '1' when (estado_s = "10" and acc_wr_en_un_top = '1' and
                             (opcode_s = "1001" or          -- LD
                              is_mov_reg_to_acc = '1' or    -- MOV ACC,R
                              is_alu_op = '1')) else '0';   -- ADD/SUB/AND/OR

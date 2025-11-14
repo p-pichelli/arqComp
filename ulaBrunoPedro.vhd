@@ -15,10 +15,12 @@ entity ulaBrunoPedro is
 end ulaBrunoPedro;
 
 architecture comportamento of ulaBrunoPedro is
-    signal soma_ext, sub_ext : unsigned(16 downto 0);
+    signal soma_ext, sub_ext : unsigned(15 downto 0);
+    signal overflow_soma, overflow_sub : std_logic;
+
 begin
-    soma_ext <= ('0' & a) + ('0' & b);
-    sub_ext  <= ('0' & a) - ('0' & b);
+    soma_ext <= a + b;
+    sub_ext  <= a - b;
 
     with controleoperacao select
         resultado <= soma_ext(15 downto 0) when "00",
@@ -28,8 +30,12 @@ begin
 
     zero <= '1' when resultado = 0 else '0';
     negative <= resultado(15);
+
+    overflow_soma <= '1' when (a(15) = b(15) ) and (a(15) /= b(15)) else '0';
+    overflow_sub  <= '1' when (a(15) /= b(15) ) and (a(15) /= sub_ext(15)) else '0';
+
     with controleoperacao select
-        overflow <= soma_ext(16) when "00",
-                     sub_ext(16)  when "01",
+        overflow <= overflow_soma when "00",
+                     overflow_sub  when "01",
                      '0'          when others;
 end comportamento;
