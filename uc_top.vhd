@@ -15,7 +15,8 @@ entity uc_top is
         bank_reg_wr_en_o : out std_logic;
         acc_wr_en_o : out std_logic;
         aluOperation_o : out std_logic_vector(1 downto 0);
-        isAluOperation_o : out std_logic
+        isAluOperation_o : out std_logic;
+        ram_wr_en_o :out std_logic
     );
 end entity;
 
@@ -79,7 +80,8 @@ begin
             bank_reg_wr_en_o => bank_reg_wr_en_o,
             acc_wr_en_o => acc_wr_en_o,
             aluOperation_o => aluOperation_o,
-            isAluOperation_o => isAluOperation_o
+            isAluOperation_o => isAluOperation_o,
+            ram_wr_en_o => ram_wr_en_o
         );
 
 

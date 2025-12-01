@@ -52,6 +52,11 @@ architecture arch_processador of processador is
     signal is_mov_acc_to_reg : std_logic;
     signal is_mov_reg_to_acc : std_logic;
     signal is_alu_op         : std_logic;  
+
+    signal ram_addr_s  : unsigned(7 downto 0);
+    signal ram_din_s   : unsigned(15 downto 0);
+    signal ram_dout_s  : unsigned(15 downto 0);
+    signal ram_we_s    : std_logic;
     
 begin
     uc_inst : entity work.uc_top(arch_uc_top)
@@ -67,7 +72,8 @@ begin
             bank_reg_wr_en_o => reg_wr_en_un_top,
             acc_wr_en_o => acc_wr_en_un_top,
             aluOperation_o => controleop_s,
-            isAluOperation_o => is_alu_op
+            isAluOperation_o => is_alu_op,
+            ram_wr_en_o => ram_we_s
         );
     
     banco_ula_inst : entity work.banco_ula_top(arch_banco_ula_top)
@@ -112,9 +118,22 @@ begin
             data_in => zero_s,
             data_out => zero_flag_ff_o
         );
+
+    ram_inst : entity work.ram(a_ram)
+        port map(
+            clk      => clk,
+            wr_en    => ram_we_s,
+            endereco => ram_addr_s,
+            dado_in  => ram_din_s,
+            dado_out => ram_dout_s
+        );
+
+    ram_addr_s <= accum_s(7 downto 0); 
+    ram_din_s <= accum_s;
+    
     opcode_s    <= instr_s(18 downto 15);
-    reg_dest_s  <= std_logic_vector(instr_s(14 downto 12));
-    reg_src_s   <= std_logic_vector(instr_s(11 downto 9));
+    reg_dest_s  <= std_logic_vector(instr_s(11 downto 9)) when is_alu_op else std_logic_vector(instr_s(14 downto 12));
+    reg_src_s   <= std_logic_vector(instr_s(14 downto 12)) when is_alu_op else std_logic_vector(instr_s(11 downto 9));
     imm_const_s <= instr_s(8 downto 0);
     
     imm_val_s <= resize(imm_const_s(7 downto 0), 16);

@@ -16,7 +16,8 @@ entity un_controle is
         bank_reg_wr_en_o :  out std_logic;
         acc_wr_en_o :       out std_logic;
         isAluOperation_o :  out std_logic;
-        aluOperation_o:     out std_logic_vector(1 downto 0)
+        aluOperation_o:     out std_logic_vector(1 downto 0);
+        ram_wr_en_o:          out std_logic
     );
 end entity;
 
@@ -57,5 +58,6 @@ begin
     
     bank_reg_wr_en_o <= '0' when jump_en = '1' else '1';
     acc_wr_en_o  <= '0' when jump_en = '1' else '1';
+    ram_wr_en_o <= '1' when opcode = "0011" else '0';
 
 end architecture;

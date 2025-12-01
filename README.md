@@ -46,21 +46,269 @@ Assembly:
 - NOP: no operation, não faz nada:
   NOP;
 
-00: LD ACC,0 A. carregar 0 no acumulador
-01: MOV R3,ACC A. R3 ← 0
+---- PASSO 1: colocar os valores de 1 a 32 ----
 
-02: LD ACC,0 B. carregar 0 no acumulador
-03: MOV R4,ACC B. R4 ← 0
+; 00
+LD ACC, 1 ; i = 1
 
-04: MOV ACC,R3 C. início: ACC ← R3
-05: ADD ACC,R4 C. ACC ← ACC + R4 (ACC = R3 + R4)
-06: MOV R4,ACC C. R4 ← ACC
+; 01
+MOV R1, ACC ; R1 = 1
 
-07: LD ACC,1 D. carregar 1 no acumulador
-08: ADD R3,ACC D. R3 + 1
+; 02
+LD ACC, 32 ; ACC = 32
 
-09: MOV ACC,30 E. carregar 30 no acumulador
-10: BLT R3,ACC,4 E. pula para o endereço 4 se R3 < ACC
+; 03
+MOV R2, ACC ; R2 = 32
 
-11: MOV ACC,R4 F. ACC ← R4
-12: MOV R5,ACC E. R5 ← ACC
+; INICIO DO LOOP (preenchimento RAM[1..32])
+
+; 04
+LD ACC, 0 ; ACC = 0
+
+; 05
+MOV R3, ACC ; R3 = 0
+
+; 06
+ADD R1, ACC ; R1 = R1 + ACC ; ACC = i + 1 (pelo comentário)
+
+; 07
+MOV R1, ACC ; R1 = ACC
+
+; 08
+MOV ACC, R1 ; ACC = R1
+
+; 09
+SUB R2, ACC ; R2 = R2 - ACC ; ACC = ACC - R2 (comentário)
+
+; 10
+MOV R2, ACC ; R2 = ACC
+
+; 11
+ST ACC, ACC ; RAM[ACC] = ACC (endereço=ACC, dado=ACC)
+
+; 12
+SUB R3, ACC ; R3 = R3 - ACC ; ativar a flag negative
+
+; 13
+BLT R3, ACC, 4 ; BLT, R2, ACC, end4 (pelo seu comentário)
+
+; 14
+NOP
+
+---- PASSO 2: eliminar os múltiplos de 2, 3, 5, 7, 11 ----
+
+; **\*** eliminar múltiplos de 2
+
+; 15
+LD ACC, 2 ; LD ACC, 2
+
+; 16
+MOV R1, ACC ; MOV R1, ACC
+
+; INICIO DO LOOP (múltiplos de 2)
+
+; 17
+LD ACC, 2 ; LD ACC, 2
+
+; 18
+ADD R1, ACC ; ADD R1, ACC
+
+; 19
+MOV R1, ACC ; MOV R1, ACC
+
+; 20
+ST ACC, R3 ; ST ACC, R3 ; RAM[ACC] = R3 = 0
+
+; 21
+MOV R2, ACC ; MOV R2, ACC
+
+; 22
+LD ACC, 32 ; LD ACC, 32
+
+; 23
+SUB R2, ACC ; SUB R2, ACC
+
+; 24
+BLT R2, ACC, 17 ; BLT R2, ACC ; end 17
+
+; **\*** eliminar múltiplos de 3
+
+; 25
+LD ACC, 3 ; LD ACC, 3
+
+; 26
+MOV R1, ACC ; MOV R1, ACC
+
+; INICIO DO LOOP (múltiplos de 3)
+
+; 27
+LD ACC, 3 ; LD ACC, 3
+
+; 28
+ADD R1, ACC ; ADD R1, ACC
+
+; 29
+MOV R1, ACC ; MOV R1, ACC
+
+; 30
+ST ACC, R3 ; ST ACC, R3 ; RAM[ACC] = R3 = 0
+
+; 31
+MOV R2, ACC ; MOV R2, ACC
+
+; 32
+LD ACC, 32 ; LD ACC, 32
+
+; 33
+SUB R2, ACC ; SUB R2, ACC
+
+; 34
+BLT R2, ACC, 27 ; BLT R2, ACC ; end 27
+
+; **\*** eliminar múltiplos de 5
+
+; 35
+LD ACC, 5 ; LD ACC, 5
+
+; 36
+MOV R1, ACC ; MOV R1, ACC
+
+; INICIO DO LOOP (múltiplos de 5)
+
+; 37
+LD ACC, 5 ; LD ACC, 5
+
+; 38
+ADD R1, ACC ; ADD R1, ACC
+
+; 39
+MOV R1, ACC ; MOV R1, ACC
+
+; 40
+ST ACC, R3 ; ST ACC, R3 ; RAM[ACC] = R3 = 0
+
+; 41
+MOV R2, ACC ; MOV R2, ACC
+
+; 42
+LD ACC, 32 ; LD ACC, 32
+
+; 43
+SUB R2, ACC ; SUB R2, ACC
+
+; 44
+BLT R2, ACC, 37 ; BLT R2, ACC ; end 37
+
+; **\*** eliminar múltiplos de 7
+
+; 45
+LD ACC, 7 ; LD ACC, 7
+
+; 46
+MOV R1, ACC ; MOV R1, ACC
+
+; INICIO DO LOOP (múltiplos de 7)
+
+; 47
+LD ACC, 7 ; LD ACC, 7
+
+; 48
+ADD R1, ACC ; ADD R1, ACC
+
+; 49
+MOV R1, ACC ; MOV R1, ACC
+
+; 50
+ST ACC, R3 ; ST ACC, R3 ; RAM[ACC] = R3 = 0
+
+; 51
+MOV R2, ACC ; MOV R2, ACC
+
+; 52
+LD ACC, 32 ; LD ACC, 32
+
+; 53
+SUB R2, ACC ; SUB R2, ACC
+
+; 54
+BLT R2, ACC, 47 ; BLT R2, ACC ; 47
+
+; **\*** eliminar múltiplos de 11
+
+; 55
+LD ACC, 11 ; LD ACC, 11
+
+; 56
+MOV R1, ACC ; MOV R1, ACC
+
+; INICIO DO LOOP (múltiplos de 11)
+
+; 57
+LD ACC, 11 ; LD ACC, 11
+
+; 58
+ADD R1, ACC ; ADD R1, ACC
+
+; 59
+MOV R1, ACC ; MOV R1, ACC
+
+; 60
+ST ACC, R3 ; ST ACC, R3 ; RAM[ACC] = R3 = 0
+
+; 61
+MOV R2, ACC ; MOV R2, ACC
+
+; 62
+LD ACC, 32 ; LD ACC, 32
+
+; 63
+SUB R2, ACC ; SUB R2, ACC
+
+; 64
+BLT R2, ACC, 57 ; BLT R2, ACC ; 57
+
+---- PASSO 3: LOOP FINAL ----
+
+; 65
+LD ACC, 1 ; LD ACC, #1
+
+; 66
+MOV R1, ACC ; R1 = ACC
+
+; 67
+LD ACC, 32 ; ACC = 32
+
+; 68
+MOV R2, ACC ; R2 = 32
+
+; INICIO DO LOOP FINAL
+
+; 69
+LD ACC, 0 ; ACC = 0
+
+; 70
+MOV R3, ACC ; R3 = 0
+
+; 71
+ADD R1, ACC ; ADD R1, ACC ; ACC = i + 1
+
+; 72
+MOV R1, ACC ; MOV R1, ACC
+
+; 73
+MOV ACC, R1 ; MOV ACC, R1
+
+; 74
+SUB R2, ACC ; SUB R2, ACC ; ACC = ACC - R2
+
+; 75
+MOV R2, ACC ; MOV R2, ACC
+
+; 76
+SUB R3, ACC ; SUB R3, ACC ; ativar a flag negative
+
+; 77
+BLT R3, ACC, 69 ; BLT R2, ACC, end69 (pelo comentário)
+
+; 78
+NOP

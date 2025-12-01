@@ -14,11 +14,14 @@ VHDL_FILES=(
     "un_controle.vhd"
     "uc_top.vhd"
     "uc_top_tb.vhd"
+    "ram.vhd"
     "processador.vhd"
     "processador_tb.vhd"
+    "crivo_top.vhd"
+    "crivo_top_tb.vhd"
 )
 
-TOP_ENTITY="processador_tb" 
+TOP_ENTITY="crivo_top_tb" 
 SIM_TIME="1ms"      
 VHDL_STANDARD="--std=08"      # Configura o padrão VHDL para 2008
 
