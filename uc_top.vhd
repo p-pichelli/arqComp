@@ -32,6 +32,9 @@ architecture arch_uc_top of uc_top is
 
     signal jump_en_s   : std_logic;
     signal jump_addr_s : unsigned(7 downto 0);
+    
+    signal halt_en_s   : std_logic;
+
     signal estado_s    : unsigned (1 downto 0);
 
     signal next_pc       : unsigned(7 downto 0);
@@ -77,6 +80,7 @@ begin
             overflow_flag_i => overflow_flag,
             jump_en         => jump_en_s,
             jump_addr_o     => jump_addr_s,
+            halt_en_o       => halt_en_s,
             bank_reg_wr_en_o => bank_reg_wr_en_o,
             acc_wr_en_o => acc_wr_en_o,
             aluOperation_o => aluOperation_o,
@@ -86,10 +90,12 @@ begin
 
 
     pc_we_s <= '1' when estado_s = "10" else '0';
-    pc_ctrl_we_s <= '0' when jump_en_s = '1' else '1';
+    pc_ctrl_we_s <= '0' when (jump_en_s = '1' or halt_en_s = '1') else '1';
         
      --pc e atualizado so qnd estado = '1'
-    next_pc <= jump_addr_s when (jump_en_s = '1') else pc_ctrl_out_s ;
+    next_pc <= pc_out_s      when halt_en_s = '1' else
+               jump_addr_s   when jump_en_s = '1'  else
+               pc_ctrl_out_s;
 
     pc_in_s <= next_pc;
 

@@ -13,6 +13,7 @@ entity un_controle is
         overflow_flag_i :   in  std_logic;
         jump_en       :     out std_logic;
         jump_addr_o   :     out unsigned(7 downto 0);
+        halt_en_o:          out std_logic;
         bank_reg_wr_en_o :  out std_logic;
         acc_wr_en_o :       out std_logic;
         isAluOperation_o :  out std_logic;
@@ -55,7 +56,9 @@ begin
                           else '0';
 
     jump_addr_o <= instr(7 downto 0) when (opcode = "1110" or opcode = "1000" or opcode = "0101" or opcode = "0111") else (others => '0');
-    
+
+    halt_en_o <= '1' when opcode = "0001" else '0';
+
     bank_reg_wr_en_o <= '0' when jump_en = '1' else '1';
     acc_wr_en_o  <= '0' when jump_en = '1' else '1';
     ram_wr_en_o <= '1' when opcode = "0011" else '0';

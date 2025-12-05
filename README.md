@@ -21,6 +21,7 @@ Opcodes:
 - BGT: 1000;
 - BVC: 0111;
 - NOP: 0000;
+- HALT: 0001;
 
 Assembly:
 
@@ -45,6 +46,7 @@ Assembly:
 - BVC (branch if overflow clear) : fará um branch para o endereço especificado caso o flag do overflow esteja em 0: BVC 4;
 - NOP: no operation, não faz nada:
   NOP;
+- HALT: loop final
 
 ---- PASSO 1: colocar os valores de 1 a 32 ----
 
