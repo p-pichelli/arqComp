@@ -10,7 +10,8 @@ entity ulaBrunoPedro is
         resultado : out unsigned(15 downto 0);
         zero    : out std_logic;
         overflow: out std_logic;
-        negative : out std_logic
+        negative : out std_logic;
+        ctz5      : out std_logic
     );
 end ulaBrunoPedro;
 
@@ -38,4 +39,6 @@ begin
         overflow <= overflow_soma when "00",
                      overflow_sub  when "01",
                      '0'          when others;
+
+    ctz5 <= '1' when resultado(4 downto 0) = "00000" else '0';
 end comportamento;

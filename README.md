@@ -22,6 +22,7 @@ Opcodes:
 - BVC: 0111;
 - NOP: 0000;
 - HALT: 0001;
+- CTZ5: 0010;
 
 Assembly:
 
@@ -47,6 +48,7 @@ Assembly:
 - NOP: no operation, não faz nada:
   NOP;
 - HALT: loop final
+- CTZ5: loopa se os últimos 5 bits no acumulador forem 0, CTZ5 4;
 
 ---- PASSO 1: colocar os valores de 1 a 32 ----
 

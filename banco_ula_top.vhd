@@ -18,7 +18,8 @@ entity banco_ula_top is
         alu_out           : out unsigned(15 downto 0);
         zero_flag         : out std_logic;
         overflow_flag         : out std_logic;
-        negative_flag      : out std_logic
+        negative_flag      : out std_logic;
+        ctz5_flag         : out std_logic
     );
 end entity banco_ula_top;
 
@@ -48,7 +49,8 @@ begin
             resultado         => alu_result,
             zero              => zero_flag,
             overflow          => overflow_flag,
-            negative         => negative_flag
+            negative          => negative_flag,
+            ctz5              => ctz5_flag
         );
    
 

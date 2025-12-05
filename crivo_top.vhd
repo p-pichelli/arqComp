@@ -19,7 +19,7 @@ architecture arch_crivo_top of crivo_top is
     signal estado_s    : unsigned(1 downto 0);
     signal acc_s       : unsigned(15 downto 0);
     signal alu_s       : unsigned(15 downto 0);
-    signal z_s, ov_s, n_s : std_logic;
+    signal z_s, ov_s, n_s, ctz5_s : std_logic;
 begin
     u_proc : entity work.processador(arch_processador)
         port map(
@@ -32,7 +32,8 @@ begin
             alu_out          => alu_s,
             zero_flag_out    => z_s,
             overflow_flag_out=> ov_s,
-            negative_flag_out=> n_s
+            negative_flag_out=> n_s,
+            ctz5_flag_out    => ctz5_s
         );
 
     primo_out <= acc_s;
