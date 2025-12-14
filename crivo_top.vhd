@@ -9,7 +9,8 @@ entity crivo_top is
         primo_out : out unsigned(15 downto 0); 
         pc_out    : out unsigned(7 downto 0);
         intr_out  : out unsigned(18 downto 0);
-        accum_out : out unsigned(15 downto 0)
+        accum_out : out unsigned(15 downto 0);
+        debug_bit: out std_logic
     );
 end entity;
 
@@ -33,7 +34,8 @@ begin
             zero_flag_out    => z_s,
             overflow_flag_out=> ov_s,
             negative_flag_out=> n_s,
-            ctz5_flag_out    => ctz5_s
+            ctz5_flag_out    => ctz5_s,
+            debug_bit => debug_bit
         );
 
     primo_out <= acc_s;

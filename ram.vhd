@@ -6,14 +6,14 @@ entity ram is
    port(
       clk      : in  std_logic;
       wr_en    : in  std_logic;
-      endereco : in  unsigned(7 downto 0);    
+      endereco : in  unsigned(15 downto 0);    
       dado_in  : in  unsigned(15 downto 0);
       dado_out : out unsigned(15 downto 0)
    );
 end entity;
 
 architecture a_ram of ram is
-   type mem_t is array (0 to 1023) of unsigned(15 downto 0);
+   type mem_t is array (0 to 5000) of unsigned(15 downto 0);
    signal conteudo_ram : mem_t := (others => (others => '0'));
 begin
    process(clk)

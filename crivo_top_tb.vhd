@@ -13,6 +13,7 @@ architecture sim of crivo_top_tb is
     signal pc_obs : unsigned(7 downto 0);
     signal acc_obs: unsigned(15 downto 0);
     signal out_obs: unsigned(15 downto 0);
+    signal debug_bit: std_logic;
 begin
     dut: entity work.crivo_top(arch_crivo_top)
         port map(
@@ -20,7 +21,8 @@ begin
             rst          => rst,
             primo_out => out_obs,
             accum_out => acc_obs,
-            pc_out => pc_obs
+            pc_out => pc_obs,
+            debug_bit => debug_bit
         );
 
     clk_proc: process

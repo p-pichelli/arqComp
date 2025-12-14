@@ -13,7 +13,6 @@ VHDL_FILES=(
     "pc_controller.vhd"
     "un_controle.vhd"
     "uc_top.vhd"
-    "uc_top_tb.vhd"
     "ram.vhd"
     "processador.vhd"
     "processador_tb.vhd"
@@ -22,7 +21,7 @@ VHDL_FILES=(
 )
 
 TOP_ENTITY="crivo_top_tb" 
-SIM_TIME="1ms"      
+SIM_TIME="2ms"      
 VHDL_STANDARD="--std=08"      # Configura o padrão VHDL para 2008
 
 # Diretório de saída (padrão: build). Pode ser passado como 1º argumento.

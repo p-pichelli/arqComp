@@ -19,7 +19,9 @@ entity banco_ula_top is
         zero_flag         : out std_logic;
         overflow_flag         : out std_logic;
         negative_flag      : out std_logic;
-        ctz5_flag         : out std_logic
+        ctz5_flag         : out std_logic;
+        reg_read_data_out : out unsigned(15 downto 0);
+        debug_bit         : out unsigned(15 downto 0)
     );
 end entity banco_ula_top;
 
@@ -38,7 +40,8 @@ begin
             clock         => clk,
             reset         => reset,
             wr_en         => reg_wr_en,
-            out_read_data => bank_read_data
+            out_read_data => bank_read_data,
+            debug_bit => debug_bit
         );
 
     alu_inst : entity work.ulaBrunoPedro(comportamento)
@@ -68,5 +71,6 @@ begin
 
     accum_out <= acc_value;
     alu_out   <= alu_result;
+    reg_read_data_out <= bank_read_data;
 
 end architecture arch_banco_ula_top;

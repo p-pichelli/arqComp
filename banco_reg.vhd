@@ -10,7 +10,8 @@ entity banco_reg is
         clock           : in std_logic;
         reset           : in std_logic;
         wr_en           : in std_logic;
-        out_read_data   : out unsigned (15 downto 0)
+        out_read_data   : out unsigned (15 downto 0);
+        debug_bit       : out unsigned (15 downto 0) --R6 como debug_bit
         );
 end banco_reg;
 
@@ -52,5 +53,5 @@ architecture arch_banco_reg of banco_reg is
                         default_out_data when others;
 
     in_data <= in_write_data;
-
+    debug_bit <= out_ch6;
 end architecture;
